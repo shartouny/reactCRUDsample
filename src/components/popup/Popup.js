@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Modal ,Button} from "react-bootstrap"
 import ManageForm from "../forms/ManageForm"
 
-export function Popup({popupContent, showPopup, action, onSubmit}){
+export default function Popup({popupContent, showPopup, action, onSubmit}){
    
     const [newClientData, setNewClientData] = useState({});
     const [isVisible, setIsVisible] = useState(false);

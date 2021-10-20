@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import {Popup} from '../popup/Popup';
+import Popup from '../popup/Popup';
 import Client from './Client';
+import Pagination from '../pagination/Pagination';
 
 export default function ClientsList (){
     const [clients , setClients] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
     const [action, setAction] = useState();
     const [checkedList, setCheckedList] = useState([]);
+
     const [popupContent, setPopupContent] = useState({
         clients:[],
         targetClient:null
     });
 
+    
     useEffect(()=> {
         setClients(JSON.parse(localStorage.getItem('clients')))
     },[])
-
+    
     useEffect(() => {
         localStorage.setItem('clients', JSON.stringify(clients));
     },[clients])
-    const clickAction = (action, data)=>{
 
+    const clickAction = (action, data)=>{
+        
         setAction(action);
 
         if(action === 'Add'){
@@ -98,8 +102,17 @@ export default function ClientsList (){
     const deleteSelected = () => {
         setClients(clients.filter(client=>!checkedList.includes(client.id)))
         setCheckedList([])
-    }
-    
+    }  
+
+    const [clientsPerPage, setClientsPerPage] = useState(4);
+    const [currentPage, setCurrentPage] = useState(1);
+    const indexOfLastClient = currentPage * clientsPerPage;
+    const indexOfFirstClient = indexOfLastClient - clientsPerPage
+    const currentClients = clients.slice(indexOfFirstClient, indexOfLastClient);
+
+    const totalPages = Math.ceil(clients.length/clientsPerPage);
+
+
     return (
         <div className="container mt-5">
             <div className="table-title">
@@ -129,7 +142,7 @@ export default function ClientsList (){
                     </tr>
                 </thead>
                 <tbody>
-                    {clients.map((client)=>(
+                    {currentClients.map((client)=>(
                         <Client 
                             clients={clients} 
                             data={client}
@@ -139,14 +152,23 @@ export default function ClientsList (){
                     ))}
                 </tbody>
             </table>
-                    
+            
+            
+            <Pagination
+                data = {clients}
+                paginatedData={currentClients}
+                setCurrentPage={setCurrentPage}
+                totalPages={totalPages}
+                currentPage={currentPage}
+            />
+            
+            
             <Popup 
                 onSubmit={handleSubmit} 
                 showPopup={showPopup} 
                 action={action} 
                 popupContent={popupContent} 
             />
-
         </div>
     )
 }
