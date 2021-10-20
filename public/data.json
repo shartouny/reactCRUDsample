@@ -1,0 +1,23 @@
+[
+    {
+        "id":1,
+        "name":"jad",
+        "family" : "shartouny"
+    },
+    {
+        "id": 2,
+        "name":"ibrahim",
+        "family" : "hammoud"
+    },
+    {
+        "id": 3,
+        "name":"mhamad",
+        "family" : "masr"
+    },
+    {
+        "id": 4,
+        "name":"sami",
+        "family" : "sami"
+    }
+
+]
