@@ -157,9 +157,9 @@ export default function ClientsList (){
             <Pagination
                 data = {clients}
                 paginatedData={currentClients}
+                currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
-                currentPage={currentPage}
             />
             
             

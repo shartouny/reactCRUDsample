@@ -1,8 +1,5 @@
-import React , {useState, useEffect} from 'react'
-
 export default function Pagination({data, paginatedData, setCurrentPage, totalPages, currentPage}) {
     
-
     const pages = []
     for(let i = 1; i<=totalPages; i++){
         pages.push(i);
@@ -19,20 +16,22 @@ export default function Pagination({data, paginatedData, setCurrentPage, totalPa
         <>
             <p>showing {paginatedData.length} out of {data.length} data</p>
             
-                    {pages.length != 1 && data.length !=0 &&
-                    <div className='pagination d-flex'>
+            {
+                pages.length != 1 && data.length !=0 &&
+                <div className='pagination d-flex'>
 
-                        <button className={`page-link ${currentPage === 1 ? 'disabled' : ''} `} onClick={getPrevPage}>prev</button>
-                        {
+                    <button className={`page-link ${currentPage === 1 ? 'disabled' : ''} `} onClick={getPrevPage}>prev</button>
+                    {
+                
+                        pages.map((page, index)=>{
+                            return <button className={`page-link ${currentPage === page ? 'active' : ''} `} onClick={()=>setCurrentPage(page)}>{page}</button>
+                        })
                     
-                            pages.map((page, index)=>{
-                                return <button className={`page-link ${currentPage === page ? 'active' : ''} `} onClick={()=>setCurrentPage(page)}>{page}</button>
-                            })
-                        
-                    
-                        }
-                        <button className={`page-link ${currentPage === totalPages ? 'disabled' : ''} `} onClick={getNextPage}>next</button>
-                    </div>}
+                
+                    }
+                    <button className={`page-link ${currentPage === totalPages ? 'disabled' : ''} `} onClick={getNextPage}>next</button>
+                </div>
+            }
                     
         </>
     )
