@@ -10,6 +10,12 @@ export default function Popup({popupContent, showPopup, action, onSubmit}){
         clients:[{}],
         targetClient:{},
     });
+    const [error , setError] = useState({
+        status : false,
+        key : '',
+        msj : ''
+    })
+
     const [method, setMethod] = useState('');
 
     useEffect(()=>{
@@ -22,18 +28,60 @@ export default function Popup({popupContent, showPopup, action, onSubmit}){
     const closePopup = () => {
         setIsVisible(false);
         setMethod('')
-        setData({
-            clients:[{}],
-            targetClient:{},
+        setData(prev=>{
+            return{
+                ...prev,
+                targetClient:{}
+            }
         });
+        setError({
+            status : false,
+            key : '',
+            msj : ''
+        })
     }
 
     const handleSubmit = () => {
         let submitData = method === 'Delete' ? data.targetClient : newClientData;
-        onSubmit(submitData)
-        closePopup()
+        if(method != 'Delete'){
+            if(validate(submitData)){
+                onSubmit(submitData)
+                closePopup()
+            }
+        }else{
+            onSubmit(submitData)
+            closePopup()
+        }
+        
     }
 
+    const validate = (d) =>{
+
+        if(d.name == ''){
+            setError(prev=>{
+                return {...prev, status:true, key:'name', msj:'Name cant be empty'};
+            })
+            console.log(error.msj);
+            return false
+        }
+        if(d.family == ''){
+            setError(prev=>{
+                return {...prev, status:true, key:'family', msj:'Family cant be empty'};
+            })
+            console.log(error.msj);
+
+            return false;
+        }
+        if(data.clients.find(client=>client.name == d.name && client.id != d.id) != null){
+            setError(prev=>{
+                return {...prev, status:true, key:'name', msj:'Client already exist'};
+            })
+            console.log(error.msj);
+
+            return false;
+        }
+        return true
+    }
 
     return  (
         <Modal show={isVisible} onHide={closePopup}>
@@ -45,15 +93,15 @@ export default function Popup({popupContent, showPopup, action, onSubmit}){
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {method === 'Delete' ? 
-                    'Are you sure you want to delete ' + data.targetClient.name + ' ' + data.targetClient.family + '?' 
-                    
-                    : method === 'Delete Selected' ? 
-                        'Are you sure you want to delete selected?! '
-                    :
+                {
+                    method === 'Delete' ? 
+                        'Are you sure you want to delete ' + data.targetClient.name + ' ' + data.targetClient.family + '?' : 
+                    method === 'Delete Selected' ? 
+                        'Are you sure you want to delete selected?! ' :
                     <ManageForm 
                         oldData ={data.targetClient} 
                         newData ={(data) => setNewClientData(data)} 
+                        error = {error}
                     />
                 }
                 

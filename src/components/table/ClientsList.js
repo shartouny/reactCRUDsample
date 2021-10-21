@@ -11,14 +11,15 @@ export default function ClientsList (){
     const [checkedList, setCheckedList] = useState([]);
 
     const [popupContent, setPopupContent] = useState({
-        clients:[],
+        clients:[{}],
         targetClient:null
     });
-
+    
     
     useEffect(()=> {
         setClients(JSON.parse(localStorage.getItem('clients')))
     },[])
+
     
     useEffect(() => {
         localStorage.setItem('clients', JSON.stringify(clients));
@@ -32,7 +33,8 @@ export default function ClientsList (){
             setShowPopup(true)
             setPopupContent(prev=>{
                 return {
-                    ...prev, 
+                    ...prev,
+                        clients:clients, 
                         targetClient:{
                             id: clients.length !== 0 ? clients[clients.length-1].id+1 : 0,
                             name: '',
@@ -47,14 +49,11 @@ export default function ClientsList (){
             setPopupContent((prev)=>{
                 return {...prev, targetClient:data}
             })
-        }else if (action ==='Delete Selected'){
-            setShowPopup(true)
         }
     }
 
     const handleSubmit = (data) => {
         if (action === 'Add'){
-
             setClients(prev =>{
                 return[...prev, data]
             });
@@ -65,7 +64,6 @@ export default function ClientsList (){
         else if (action === 'Delete'){
             setClients(clients.filter(client => client.id !== data.id));
             setCheckedList(checkedList.filter(ids => ids !== data.id))
-
         }
     }
  
@@ -89,8 +87,8 @@ export default function ClientsList (){
             if(!checkedList.includes(client.id)){
                 setCheckedList(prev=>[...prev, client.id])
             }
-           
         }):
+        
         setCheckedList([])
         
         setClients(clients.map(client=>{
@@ -111,7 +109,6 @@ export default function ClientsList (){
     const currentClients = clients.slice(indexOfFirstClient, indexOfLastClient);
 
     const totalPages = Math.ceil(clients.length/clientsPerPage);
-
 
     return (
         <div className="container mt-5">
@@ -142,17 +139,18 @@ export default function ClientsList (){
                     </tr>
                 </thead>
                 <tbody>
-                    {currentClients.map((client)=>(
-                        <Client 
-                            clients={clients} 
-                            data={client}
-                            onCheckboxChange={handleCheckedList}
-                            clickAction={clickAction}
-                        />
-                    ))}
+                    {
+                        currentClients.map((client)=>(
+                            <Client 
+                                clients={clients} 
+                                data={client}
+                                onCheckboxChange={handleCheckedList}
+                                clickAction={clickAction}
+                            />
+                        ))
+                    }
                 </tbody>
             </table>
-            
             
             <Pagination
                 data = {clients}
@@ -161,7 +159,6 @@ export default function ClientsList (){
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
             />
-            
             
             <Popup 
                 onSubmit={handleSubmit} 
