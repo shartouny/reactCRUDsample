@@ -61,14 +61,12 @@ export default function Popup({popupContent, showPopup, action, onSubmit}){
             setError(prev=>{
                 return {...prev, status:true, key:'name', msj:'Name cant be empty'};
             })
-            console.log(error.msj);
             return false
         }
         if(d.family == ''){
             setError(prev=>{
                 return {...prev, status:true, key:'family', msj:'Family cant be empty'};
             })
-            console.log(error.msj);
 
             return false;
         }
@@ -76,7 +74,6 @@ export default function Popup({popupContent, showPopup, action, onSubmit}){
             setError(prev=>{
                 return {...prev, status:true, key:'name', msj:'Client already exist'};
             })
-            console.log(error.msj);
 
             return false;
         }

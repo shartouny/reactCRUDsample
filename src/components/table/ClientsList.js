@@ -83,7 +83,7 @@ export default function ClientsList (){
     const selectAll = (e) =>{
         let status = e.target.checked 
         status ?
-        clients.map(client=> {
+        currentClients.map(client=> {
             if(!checkedList.includes(client.id)){
                 setCheckedList(prev=>[...prev, client.id])
             }
@@ -99,6 +99,10 @@ export default function ClientsList (){
 
     const deleteSelected = () => {
         setClients(clients.filter(client=>!checkedList.includes(client.id)))
+        // setClients(clients.map(client=>{
+        //     client.selected = false
+        //     return client
+        // }))
         setCheckedList([])
     }  
 
@@ -109,6 +113,13 @@ export default function ClientsList (){
     const currentClients = clients.slice(indexOfFirstClient, indexOfLastClient);
 
     const totalPages = Math.ceil(clients.length/clientsPerPage);
+
+    useEffect(() => {
+        if(currentClients.length == 0 && currentPage != 1){
+            setCurrentPage(prev=>prev-1)
+        }
+    }, [currentClients])
+
 
     return (
         <div className="container mt-5">
@@ -130,7 +141,7 @@ export default function ClientsList (){
                 <thead>
                     <tr>
                         <th scope="col">
-                            <input checked={checkedList.length !== 0 && checkedList.length === clients.length} className="mx-auto" type="checkbox" onChange={selectAll}/>
+                            <input checked={checkedList.length !== 0 && checkedList.length === currentClients.length} className="mx-auto" type="checkbox" onChange={selectAll}/>
                         </th>
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
@@ -159,7 +170,7 @@ export default function ClientsList (){
                 setCurrentPage={setCurrentPage}
                 totalPages={totalPages}
             />
-            
+            {checkedList.length !=0 &&<p>{checkedList.length} Selected</p>}
             <Popup 
                 onSubmit={handleSubmit} 
                 showPopup={showPopup} 
